@@ -1,12 +1,12 @@
-import 'package:account/model/transactionItem.dart';
-import 'package:account/provider/transactionProvider.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:account/model/athleteItem.dart';
+import 'package:account/provider/athleteProvider.dart';
 
 class EditScreen extends StatefulWidget {
-  TransactionItem item;
-  
-  EditScreen({super.key, required this.item});
+  final Athlete athlete;
+
+  EditScreen({super.key, required this.athlete});
 
   @override
   State<EditScreen> createState() => _EditScreenState();
@@ -14,73 +14,192 @@ class EditScreen extends StatefulWidget {
 
 class _EditScreenState extends State<EditScreen> {
   final formKey = GlobalKey<FormState>();
-  final titleController = TextEditingController();
-  final amountController = TextEditingController();
+  final nameController = TextEditingController();
+  final scoreController = TextEditingController();
+  final ageController = TextEditingController();
+  DateTime? birthDate;
+  String selectedSport = 'Football';
+
+  final sportsList = ['Football', 'Basketball', 'Tennis', 'Baseball', 'Volleyball'];
+
+  @override
+  void initState() {
+    super.initState();
+    nameController.text = widget.athlete.name;
+    scoreController.text = widget.athlete.scoreInteresting.toString();
+    ageController.text = widget.athlete.age.toString();
+    birthDate = widget.athlete.birth;
+    selectedSport = widget.athlete.sport;
+  }
 
   @override
   Widget build(BuildContext context) {
-    titleController.text = widget.item.title;
-    amountController.text = widget.item.amount.toString();
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-        title: const Text('Edit'),
+        title: const Text(
+          'Edit Athlete',
+          style: TextStyle(fontSize: 16, color: Colors.white), // Set font size to 16 and color to white
+        ),
+        backgroundColor: Colors.blue, // Set AppBar background to blue
+        iconTheme: const IconThemeData(color: Colors.white), // Set icon color to white
       ),
-      body: Form(
-        key: formKey,
-        child: Column(
-          children: [
-            TextFormField(
-              decoration: InputDecoration(label: const Text('ชื่อรายการ')),
-              autofocus: true,
-              controller: titleController,
-              validator: (String? value) {
-                if(value!.isEmpty){
-                  print('value: $value');
-                  return "กรุณาป้อนชื่อรายการ";
-                }
-                return null;
-              },
-            ),
-            TextFormField(
-              decoration: InputDecoration(label: const Text('จำนวนเงิน')),
-              keyboardType: TextInputType.number,
-              controller: amountController,
-              validator: (String? value) {
-                try{
-                  double amount = double.parse(value!);
-                  if(amount <= 0){
-                    return "กรุณาป้อนจำนวนเงินที่มากกว่า 0";
-                  }
-                  
-                } catch(e){
-                  return "กรุณาป้อนเป็นตัวเลขเท่านั้น";
-                }
-                return null;
-              },
-            ),
-            ElevatedButton(
-              onPressed: () {
-                if(formKey.currentState!.validate()){
-                  // ทำการเพิ่มข้อมูล
-                  var provider = Provider.of<TransactionProvider>(context, listen: false);
-                  
-                  TransactionItem item = TransactionItem(
-                    keyID: widget.item.keyID,
-                    title: titleController.text,
-                    amount: double.parse(amountController.text),
-                    date: widget.item.date
-                  );
+      body: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: Card(
+          elevation: 8,
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+          child: Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: Form(
+              key: formKey,
+              child: ListView(
+                children: [
+                  // Name input field
+                  TextFormField(
+                    controller: nameController,
+                    decoration: const InputDecoration(
+                      label: Text('Name'),
+                      border: OutlineInputBorder(),
+                      contentPadding: EdgeInsets.symmetric(vertical: 10, horizontal: 12),
+                    ),
+                    validator: (String? value) {
+                      if (value!.isEmpty) return "Please enter the name";
+                      return null;
+                    },
+                    textInputAction: TextInputAction.next,
+                  ),
+                  const SizedBox(height: 16),
 
-                  provider.updateTransaction(item);
+                  // Interesting Score input field
+                  TextFormField(
+                    controller: scoreController,
+                    decoration: const InputDecoration(
+                      label: Text('Interesting Score'),
+                      border: OutlineInputBorder(),
+                      contentPadding: EdgeInsets.symmetric(vertical: 10, horizontal: 12),
+                    ),
+                    keyboardType: TextInputType.number,
+                    validator: (String? value) {
+                      try {
+                        double score = double.parse(value!);
+                        if (score < 0 || score > 10) return "Score must be between 0 and 10";
+                      } catch (e) {
+                        return "Please enter a valid number";
+                      }
+                      return null;
+                    },
+                    textInputAction: TextInputAction.next,
+                  ),
+                  const SizedBox(height: 16),
 
-                  // ปิดหน้าจอ
-                  Navigator.pop(context);
-                }
-              },
-              child: const Text('แก้ไขข้อมูล'),
+                  // Age input field
+                  TextFormField(
+                    controller: ageController,
+                    decoration: const InputDecoration(
+                      label: Text('Age'),
+                      border: OutlineInputBorder(),
+                      contentPadding: EdgeInsets.symmetric(vertical: 10, horizontal: 12),
+                    ),
+                    keyboardType: TextInputType.number,
+                    validator: (String? value) {
+                      try {
+                        int age = int.parse(value!);
+                        if (age <= 0) return "Age must be positive";
+                      } catch (e) {
+                        return "Please enter a valid age";
+                      }
+                      return null;
+                    },
+                    textInputAction: TextInputAction.done,
+                  ),
+                  const SizedBox(height: 16),
+
+                  // Birth Date Picker Button
+                  TextButton(
+                    onPressed: () async {
+                      DateTime? pickedDate = await showDatePicker(
+                        context: context,
+                        initialDate: birthDate!,
+                        firstDate: DateTime(1900),
+                        lastDate: DateTime.now(),
+                      );
+                      if (pickedDate != null && pickedDate != birthDate) {
+                        setState(() {
+                          birthDate = pickedDate;
+                        });
+                      }
+                    },
+                    style: TextButton.styleFrom(
+                      padding: const EdgeInsets.symmetric(vertical: 12.0),
+                      backgroundColor: Colors.blue,
+                      foregroundColor: Colors.white,
+                    ),
+                    child: Text(
+                      birthDate == null
+                          ? 'Select Birth Date'
+                          : 'Birth Date: ${birthDate?.toLocal().toString().split(' ')[0]}',
+                      style: const TextStyle(fontSize: 16),
+                    ),
+                  ),
+                  const SizedBox(height: 16),
+
+                  // Dropdown for Sport selection
+                  DropdownButtonFormField<String>(
+                    value: selectedSport,
+                    onChanged: (String? newValue) {
+                      setState(() {
+                        selectedSport = newValue!;
+                      });
+                    },
+                    items: sportsList.map<DropdownMenuItem<String>>((String value) {
+                      return DropdownMenuItem<String>(
+                        value: value,
+                        child: Text(value),
+                      );
+                    }).toList(),
+                    decoration: const InputDecoration(
+                      labelText: 'Sport',
+                      border: OutlineInputBorder(),
+                      contentPadding: EdgeInsets.symmetric(vertical: 10, horizontal: 12),
+                    ),
+                  ),
+                  const SizedBox(height: 32),
+
+                  // Update Athlete button
+                  ElevatedButton(
+                    onPressed: () {
+                      if (formKey.currentState!.validate()) {
+                        var provider = Provider.of<AthleteProvider>(context, listen: false);
+                        Athlete updatedAthlete = Athlete(
+                          keyID: widget.athlete.keyID,
+                          name: nameController.text,
+                          scoreInteresting: double.parse(scoreController.text),
+                          age: int.parse(ageController.text),
+                          birth: birthDate!,
+                          sport: selectedSport,
+                        );
+                        provider.deleteAthlete(widget.athlete);
+                        provider.addAthlete(updatedAthlete);
+                        Navigator.pop(context);
+                      }
+                    },
+                    style: ElevatedButton.styleFrom(
+                      padding: const EdgeInsets.symmetric(vertical: 14.0),
+                      backgroundColor: Colors.blue,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(8),
+                      ),
+                    ),
+                    child: const Text(
+                      'Update Athlete',
+                      style: TextStyle(color: Colors.white),
+                    ),
+                  ),
+                ],
+              ),
             ),
-        ],),
+          ),
+        ),
       ),
     );
   }
