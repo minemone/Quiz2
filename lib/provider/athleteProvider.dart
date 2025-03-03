@@ -1,6 +1,6 @@
 import 'package:flutter/foundation.dart';
-import 'package:account/model/athleteItem.dart';  // Import your Athlete model
-import 'package:account/database/athleteDB.dart'; // Import Athlete database file
+import 'package:ProfessionalAthletes_App/model/athleteItem.dart';  // Import your Athlete model
+import 'package:ProfessionalAthletes_App/database/athleteDB.dart'; // Import Athlete database file
 
 class AthleteProvider with ChangeNotifier {
   List<Athlete> athletes = []; // List of athletes

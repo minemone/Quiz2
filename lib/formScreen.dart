@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:account/model/athleteItem.dart'; // Rename model to Athlete
-import 'package:account/provider/athleteProvider.dart'; // Rename provider to AthleteProvider
+import 'package:ProfessionalAthletes_App/model/athleteItem.dart'; // Rename model to Athlete
+import 'package:ProfessionalAthletes_App/provider/athleteProvider.dart'; // Rename provider to AthleteProvider
 
 class FormScreen extends StatefulWidget {
   const FormScreen({super.key});

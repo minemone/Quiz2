@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:account/model/athleteItem.dart'; // Rename model to Athlete
-import 'package:account/provider/athleteProvider.dart'; // Rename provider to AthleteProvider
+import 'package:ProfessionalAthletes_App/model/athleteItem.dart'; // Rename model to Athlete
+import 'package:ProfessionalAthletes_App/provider/athleteProvider.dart'; // Rename provider to AthleteProvider
 import 'formScreen.dart';
-import 'package:account/editScreen.dart'; // Assuming you have an edit screen for athletes
+import 'package:ProfessionalAthletes_App/editScreen.dart'; // Assuming you have an edit screen for athletes
 
 void main() {
   runApp(const MyApp());

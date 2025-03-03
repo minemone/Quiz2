@@ -1,7 +1,7 @@
 import 'dart:io';
-import 'package:account/model/athleteItem.dart';
+import 'package:ProfessionalAthletes_App/model/athleteItem.dart';
 import 'package:path/path.dart';
-import 'package:account/provider/athleteProvider.dart';
+import 'package:ProfessionalAthletes_App/provider/athleteProvider.dart';
 import 'package:sembast/sembast.dart';
 import 'package:sembast/sembast_io.dart';
 import 'package:path_provider/path_provider.dart';

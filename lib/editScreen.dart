@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:account/model/athleteItem.dart';
-import 'package:account/provider/athleteProvider.dart';
+import 'package:ProfessionalAthletes_App/model/athleteItem.dart';
+import 'package:ProfessionalAthletes_App/provider/athleteProvider.dart';
 
 class EditScreen extends StatefulWidget {
   final Athlete athlete;
